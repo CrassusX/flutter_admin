@@ -74,7 +74,7 @@ class PersonListState extends State {
     myDS.addListener(() {
       if (mounted) this.setState(() {});
     });
-    WidgetsBinding.instance.addPostFrameCallback((c) {
+    WidgetsBinding.instance?.addPostFrameCallback((c) {
       _query();
     });
   }
@@ -106,9 +106,18 @@ class PersonListState extends State {
 
     var buttonBar = CryButtonBar(
       children: <Widget>[
-        CryButton(label: S.of(context).query, iconData: Icons.search, onPressed: () => _query()),
-        CryButton(label: S.of(context).reset, iconData: Icons.refresh, onPressed: () => _reset()),
-        CryButton(label: S.of(context).add, iconData: Icons.add, onPressed: () => _edit()),
+        CryButton(
+            label: S.of(context).query,
+            iconData: Icons.search,
+            onPressed: () => _query()),
+        CryButton(
+            label: S.of(context).reset,
+            iconData: Icons.refresh,
+            onPressed: () => _reset()),
+        CryButton(
+            label: S.of(context).add,
+            iconData: Icons.add,
+            onPressed: () => _edit()),
         CryButton(
           label: S.of(context).modify,
           iconData: Icons.edit,
@@ -130,7 +139,8 @@ class PersonListState extends State {
           onPressed: myDS.selectedCount < 1
               ? null
               : () {
-                  cryConfirm(context, S.of(context).confirmDelete, (context) async {
+                  cryConfirm(context, S.of(context).confirmDelete,
+                      (context) async {
                     List ids = myDS.dataList.where((v) {
                       return v.selected!;
                     }).map<String?>((v) {
@@ -168,31 +178,38 @@ class PersonListState extends State {
             columns: <DataColumn>[
               DataColumn(
                 label: Text(S.of(context).name),
-                onSort: (int columnIndex, bool ascending) => myDS.sort('name', ascending),
+                onSort: (int columnIndex, bool ascending) =>
+                    myDS.sort('name', ascending),
               ),
               DataColumn(
                 label: Text(S.of(context).personNickname),
-                onSort: (int columnIndex, bool ascending) => myDS.sort('nick_name', ascending),
+                onSort: (int columnIndex, bool ascending) =>
+                    myDS.sort('nick_name', ascending),
               ),
               DataColumn(
                 label: Text(S.of(context).personGender),
-                onSort: (int columnIndex, bool ascending) => myDS.sort('gender', ascending),
+                onSort: (int columnIndex, bool ascending) =>
+                    myDS.sort('gender', ascending),
               ),
               DataColumn(
                 label: Text(S.of(context).personBirthday),
-                onSort: (int columnIndex, bool ascending) => myDS.sort('birthday', ascending),
+                onSort: (int columnIndex, bool ascending) =>
+                    myDS.sort('birthday', ascending),
               ),
               DataColumn(
                 label: Text(S.of(context).personDepartment),
-                onSort: (int columnIndex, bool ascending) => myDS.sort('dept_id', ascending),
+                onSort: (int columnIndex, bool ascending) =>
+                    myDS.sort('dept_id', ascending),
               ),
               DataColumn(
                 label: Text(S.of(context).creationTime),
-                onSort: (int columnIndex, bool ascending) => myDS.sort('create_time', ascending),
+                onSort: (int columnIndex, bool ascending) =>
+                    myDS.sort('create_time', ascending),
               ),
               DataColumn(
                 label: Text(S.of(context).updateTime),
-                onSort: (int columnIndex, bool ascending) => myDS.sort('update_time', ascending),
+                onSort: (int columnIndex, bool ascending) =>
+                    myDS.sort('update_time', ascending),
               ),
               DataColumn(
                 label: Text(S.of(context).operating),
@@ -228,7 +245,8 @@ class MyDS extends DataTableSource {
   late List<PersonModel> dataList;
   int selectedCount = 0;
   RequestBodyApi requestBodyApi = RequestBodyApi();
-  PageModel page = PageModel(orders: [OrderItemModel(column: 'create_time', asc: false)]);
+  PageModel page =
+      PageModel(orders: [OrderItemModel(column: 'create_time', asc: false)]);
 
   sort(column, ascending) {
     page.orders[0].column = column;
@@ -238,7 +256,8 @@ class MyDS extends DataTableSource {
 
   loadData() async {
     requestBodyApi.page = page;
-    ResponseBodyApi responseBodyApi = await PersonApi.page(requestBodyApi.toMap());
+    ResponseBodyApi responseBodyApi =
+        await PersonApi.page(requestBodyApi.toMap());
     page = PageModel.fromMap(responseBodyApi.data);
 
     dataList = page.records.map<PersonModel>((v) {
@@ -299,7 +318,8 @@ class MyDS extends DataTableSource {
             IconButton(
               icon: Icon(Icons.delete),
               onPressed: () {
-                cryConfirm(context, S.of(context).confirmDelete, (context) async {
+                cryConfirm(context, S.of(context).confirmDelete,
+                    (context) async {
                   var result = await PersonApi.removeByIds([personModel.id]);
                   if (result.success) {
                     loadData();

@@ -37,7 +37,7 @@ class _RoleListState extends State<RoleList> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((c) {
+    WidgetsBinding.instance?.addPostFrameCallback((c) {
       _query();
     });
   }
@@ -80,10 +80,22 @@ class _RoleListState extends State<RoleList> {
           DataCell(
             CryButtonBar(
               children: [
-                CryButton(iconData: Icons.edit, tip: S.of(context).modify, onPressed: () => _edit(role)),
-                CryButton(iconData: Icons.delete, tip: S.of(context).delete, onPressed: () => _delete([role])),
-                CryButton(iconData: Icons.person, tip: S.of(context).selectUsers, onPressed: () => _selectUser(role)),
-                CryButton(iconData: Icons.menu, tip: S.of(context).selectMenus, onPressed: () => _selectMenu(role)),
+                CryButton(
+                    iconData: Icons.edit,
+                    tip: S.of(context).modify,
+                    onPressed: () => _edit(role)),
+                CryButton(
+                    iconData: Icons.delete,
+                    tip: S.of(context).delete,
+                    onPressed: () => _delete([role])),
+                CryButton(
+                    iconData: Icons.person,
+                    tip: S.of(context).selectUsers,
+                    onPressed: () => _selectUser(role)),
+                CryButton(
+                    iconData: Icons.menu,
+                    tip: S.of(context).selectMenus,
+                    onPressed: () => _selectMenu(role)),
               ],
             ),
           ),
@@ -91,7 +103,11 @@ class _RoleListState extends State<RoleList> {
         ];
       },
     );
-    List<Role> selectedList = tableKey.currentState?.getSelectedList(page).map<Role>((e) => Role.fromMap(e)).toList() ?? [];
+    List<Role> selectedList = tableKey.currentState
+            ?.getSelectedList(page)
+            .map<Role>((e) => Role.fromMap(e))
+            .toList() ??
+        [];
     var buttonBar = ButtonBar(
       alignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -162,7 +178,8 @@ class _RoleListState extends State<RoleList> {
       return;
     }
     cryConfirm(context, S.of(context).confirmDelete, (context) async {
-      var result = await RoleApi.removeByIds(roleList.map((e) => e.id).toList());
+      var result =
+          await RoleApi.removeByIds(roleList.map((e) => e.id).toList());
       if (result.success) {
         _query();
         CryUtils.message(S.of(context).success);
@@ -173,8 +190,11 @@ class _RoleListState extends State<RoleList> {
   _query() async {
     RequestBodyApi requestBodyApi = RequestBodyApi();
     requestBodyApi.page = page;
-    ResponseBodyApi responseBodyApi = await RoleApi.page(requestBodyApi.toMap());
-    page = responseBodyApi.data != null ? PageModel.fromMap(responseBodyApi.data) : PageModel();
+    ResponseBodyApi responseBodyApi =
+        await RoleApi.page(requestBodyApi.toMap());
+    page = responseBodyApi.data != null
+        ? PageModel.fromMap(responseBodyApi.data)
+        : PageModel();
     setState(() {
       tableKey.currentState!.loadData(page);
     });

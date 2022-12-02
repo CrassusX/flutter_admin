@@ -41,7 +41,7 @@ class _UserInfoListState extends State<UserInfoList> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((c) {
+    WidgetsBinding.instance?.addPostFrameCallback((c) {
       _query();
     });
   }
@@ -138,7 +138,10 @@ class _UserInfoListState extends State<UserInfoList> {
           DataCell(
             CryButtonBar(
               children: [
-                CryButton(iconData: Icons.edit, tip: S.of(context).modify, onPressed: () => _edit(userInfo)),
+                CryButton(
+                    iconData: Icons.edit,
+                    tip: S.of(context).modify,
+                    onPressed: () => _edit(userInfo)),
               ],
             ),
           ),
@@ -157,13 +160,18 @@ class _UserInfoListState extends State<UserInfoList> {
         ];
       },
     );
-    List<UserInfo> selectedList = tableKey.currentState?.getSelectedList(page).map<UserInfo>((e) => UserInfo.fromMap(e)).toList() ?? [];
+    List<UserInfo> selectedList = tableKey.currentState
+            ?.getSelectedList(page)
+            .map<UserInfo>((e) => UserInfo.fromMap(e))
+            .toList() ??
+        [];
     CryButtonBar buttonBar = CryButtonBar(
       children: <Widget>[
         CryButtons.query(context, () => _query()),
         CryButtons.reset(context, () => _reset()),
         CryButtons.add(context, () => _edit(null)),
-        CryButtons.edit(context, selectedList.length != 1 ? null : () => _edit(selectedList[0])),
+        CryButtons.edit(context,
+            selectedList.length != 1 ? null : () => _edit(selectedList[0])),
       ],
     );
     var result = Scaffold(
@@ -184,7 +192,9 @@ class _UserInfoListState extends State<UserInfoList> {
   _edit(UserInfo? userInfo) async {
     var result = await Utils.fullscreenDialog(UserInfoEdit(userInfo: userInfo));
     if (result ?? false) {
-      userInfo == null ? _sort('create_time', ascending: false) : _sort('update_time', ascending: false);
+      userInfo == null
+          ? _sort('create_time', ascending: false)
+          : _sort('update_time', ascending: false);
     }
   }
 
@@ -201,8 +211,11 @@ class _UserInfoListState extends State<UserInfoList> {
   }
 
   _loadData() async {
-    ResponseBodyApi responseBodyApi = await UserInfoApi.page(RequestBodyApi(page: page, params: userInfo.toMap()).toMap());
-    page = responseBodyApi.data != null ? PageModel.fromMap(responseBodyApi.data) : PageModel();
+    ResponseBodyApi responseBodyApi = await UserInfoApi.page(
+        RequestBodyApi(page: page, params: userInfo.toMap()).toMap());
+    page = responseBodyApi.data != null
+        ? PageModel.fromMap(responseBodyApi.data)
+        : PageModel();
     tableKey.currentState!.loadData(page);
   }
 

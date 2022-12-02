@@ -45,7 +45,7 @@ class RoleUserSelectListState extends State<RoleUserSelectList> {
     super.initState();
     page = PageModel(orders: [OrderItemModel(column: 'name')]);
 
-    WidgetsBinding.instance.addPostFrameCallback((c) {
+    WidgetsBinding.instance?.addPostFrameCallback((c) {
       query();
     });
   }
@@ -120,7 +120,8 @@ class RoleUserSelectListState extends State<RoleUserSelectList> {
       getCells: (m) {
         UserInfo userInfo = UserInfo.fromMap(m);
         return [
-          DataCell(Container(width: 100, child: Text(userInfo.userName ?? '--'))),
+          DataCell(
+              Container(width: 100, child: Text(userInfo.userName ?? '--'))),
           DataCell(Container(width: 100, child: Text(userInfo.name ?? '--'))),
         ];
       },
@@ -142,7 +143,11 @@ class RoleUserSelectListState extends State<RoleUserSelectList> {
   }
 
   List<UserInfo> getSelectedList() {
-    List<UserInfo> selectedList = tableKey.currentState?.getSelectedList(page!).map<UserInfo>((e) => UserInfo.fromMap(e)).toList() ?? [];
+    List<UserInfo> selectedList = tableKey.currentState
+            ?.getSelectedList(page!)
+            .map<UserInfo>((e) => UserInfo.fromMap(e))
+            .toList() ??
+        [];
     return selectedList;
   }
 
@@ -153,9 +158,11 @@ class RoleUserSelectListState extends State<RoleUserSelectList> {
     requestBodyApi.params = params;
     ResponseBodyApi responseBodyApi;
     if (widget.isSelected) {
-      responseBodyApi = await RoleApi.getSelectedUserInfo(requestBodyApi.toMap());
+      responseBodyApi =
+          await RoleApi.getSelectedUserInfo(requestBodyApi.toMap());
     } else {
-      responseBodyApi = await RoleApi.getUnSelectedUserInfo(requestBodyApi.toMap());
+      responseBodyApi =
+          await RoleApi.getUnSelectedUserInfo(requestBodyApi.toMap());
     }
     page = PageModel.fromMap(responseBodyApi.data);
 
